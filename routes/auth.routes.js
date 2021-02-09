@@ -100,10 +100,31 @@ router.post("/signin", (req, res, next) => {
 
 // GET request to handle /profile
 
-router.get('/profile', (req, res) => {
+const checkLoggedInUser = (req, res, next) => {
+    if (req.session.loggedInUser) {
+        next()
+    }
+    else {
+        res.redirect('/signin')
+    }
+}
+
+router.get('/profile', checkLoggedInUser,  (req, res, next) => {
     let email = req.session.loggedInUser.email
     res.render('profile.hbs', {email})
 })
+
+
+
+//router.get(path, callback,callback,callback,callback,callback)
+
+
+router.get('/logout', (req, res) => {
+    req.session.destroy()
+    res.redirect('/')
+})
+
+
 
 
 
